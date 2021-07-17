@@ -1,0 +1,10 @@
+arenas:
+  <arena name>:
+    lobby_spawn_location:
+    spectator_spawn_location:
+    end_spawn_location:
+    game_spawn_locations:
+      red:
+      blue:
+      yellow:
+      green:

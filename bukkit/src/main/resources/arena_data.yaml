@@ -1,0 +1,10 @@
+arenas:
+  <arenaName>:
+    activated: false
+    team_mode: 1
+    id: 12
+    number_of_players: 8
+    teams:
+      yellow:
+        team_display_name: Yellow
+        team_colour: Yellow
