@@ -64,6 +64,14 @@ public class Create implements SubCommand {
             FileConfiguration config = arenaData.getConfig();
 
             config.set("arenas", arenaName);
+            config.set("arenas." + arenaName + ".activated", false);
+            config.set("arenas." + arenaName + ".team_mode", 1);
+            config.set("arenas." + arenaName + ".id", randomNumber);
+            config.set("arenas." + arenaName + ".number_of_players", 8);
+            config.set("arenas." + arenaName + ".activated", false);
+
+            player.sendMessage(ChatColor.GREEN + "SUCCESS: Created arena " + arenaName + " with ID " + randomNumber);
+            arenaData.save();
             return false;
         }else{
             player.sendMessage(ChatColor.RED + "Invalid Arguments");

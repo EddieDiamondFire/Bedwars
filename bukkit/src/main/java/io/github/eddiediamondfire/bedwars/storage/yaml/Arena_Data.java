@@ -1,5 +1,6 @@
 package io.github.eddiediamondfire.bedwars.storage.yaml;
 
+import com.google.common.io.Files;
 import io.github.eddiediamondfire.bedwars.Bedwars;
 import io.github.eddiediamondfire.bedwars.arenadata.GameInstance;
 import io.github.eddiediamondfire.bedwars.arenadata.GameState;
@@ -15,6 +16,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,11 +37,16 @@ public class Arena_Data implements AbstractYamlFile{
 
     @Override
     public void load() {
-        file = new File(plugin.getDataFolder().getAbsolutePath() + "/arenas/", getFileName());
+        file = new File(plugin.getDataFolder() + "/arenas/" + getFileName());
 
         if(!file.exists()){
-            file.getParentFile().mkdirs();
-            plugin.saveResource(getFileName(), false);
+            try{
+                file.getParentFile().mkdirs();
+                plugin.saveResource(getFileName(), false);
+                Files.move(new File(plugin.getDataFolder(), getFileName()), new File(plugin.getDataFolder() + "/arenas/" + getFileName()));
+            }catch (IOException ex){
+                ex.printStackTrace();
+            }
         }
 
         config = new YamlConfiguration();
@@ -53,24 +61,29 @@ public class Arena_Data implements AbstractYamlFile{
 
         ConfigurationSection section = config.getConfigurationSection("arenas");
 
-        for(String key: section.getKeys(false)){
-            int id = config.getInt("arenas." + key + ".id");
-            boolean activated = config.getBoolean("arenas." + key + ".activated");
-            int numberOfPlayers = config.getInt("arenas." + key + ".number_of_players");
-            int teamMode = config.getInt("arenas." + key + ".team_mode");
-            int minPlayers = config.getInt("arenas."+ key + ".min_players");
+        if(section != null){
+            for(String key: section.getKeys(false)){
+                int id = config.getInt("arenas." + key + ".id");
+                boolean activated = config.getBoolean("arenas." + key + ".activated");
+                int numberOfPlayers = config.getInt("arenas." + key + ".number_of_players");
+                int teamMode = config.getInt("arenas." + key + ".team_mode");
+                int minPlayers = config.getInt("arenas."+ key + ".min_players");
 
-            List<Team> teams = new ArrayList<Team>();
-            for(String teamKey: config.getConfigurationSection("arenas." + key + ".teams").getKeys(false)){
-                String teamName = config.getString("arenas." + key + ".teams." + teamKey);
-                String teamDisplayName = config.getString("arenas." + key + ".teams." + teamKey + ".team_display_name");
-                ChatColor teamColour = ChatColor.valueOf(config.getString("arenas." + key + ".teams." + teamKey + ".team_colour"));
-                Team team = new Team(teamName, teamDisplayName, teamColour);
-                teams.add(team);
+                List<Team> teams = new ArrayList<Team>();
+                for(String teamKey: config.getConfigurationSection("arenas." + key + ".teams").getKeys(false)){
+                    String teamName = config.getString("arenas." + key + ".teams." + teamKey);
+                    String teamDisplayName = config.getString("arenas." + key + ".teams." + teamKey + ".team_display_name");
+                    ChatColor teamColour = ChatColor.valueOf(config.getString("arenas." + key + ".teams." + teamKey + ".team_colour"));
+                    Team team = new Team(teamName, teamDisplayName, teamColour);
+                    teams.add(team);
+                }
+
+
+                arenaManager.loadArenaData(key, id, activated, numberOfPlayers, teams, teamMode, minPlayers);
+                plugin.getLogger().info("Loaded arena "+ key);
             }
-
-            arenaManager.loadArenaData(key, id, activated, numberOfPlayers, teams, teamMode, minPlayers);
-            plugin.getLogger().info("Loaded arena "+ key);
+        }else{
+            plugin.getLogger().info("Error: This nothing in arena_data.yml, probably this is the first time Bedwars plugin is installed.");
         }
     }
 

@@ -23,7 +23,7 @@ public class GameInstance {
         setGameLocations(new HashMap<>());
         setGameState(GameState.DEACTIVATED);
         setTeams(new ArrayList<>());
-        setNumberOfPlayers(10);
+        setNumberOfPlayers(8);
         setTeamMode(1);
         setMinPlayers(2);
     }

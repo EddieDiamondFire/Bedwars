@@ -8,4 +8,4 @@ arenas:
     teams:
       yellow:
         team_display_name: Yellow
-        team_colour: Yellow
+        team_colour: YELLOW

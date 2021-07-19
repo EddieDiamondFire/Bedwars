@@ -1,11 +1,13 @@
 package io.github.eddiediamondfire.bedwars.storage.yaml;
 
+import com.google.common.io.Files;
 import io.github.eddiediamondfire.bedwars.Bedwars;
 import io.github.eddiediamondfire.bedwars.arenadata.GameInstance;
 import io.github.eddiediamondfire.bedwars.arenadata.Team;
 import io.github.eddiediamondfire.bedwars.game.arena.ArenaManager;
 import io.github.eddiediamondfire.bedwars.storage.FileManager;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -32,8 +34,13 @@ public class Arena_Spawn implements AbstractYamlFile{
     public void load() {
         File file = new File(plugin.getDataFolder().getAbsolutePath() + "/arenas/", getFileName());
         if(!file.exists()){
-            file.getParentFile().mkdirs();
-            plugin.saveResource(getFileName(), false);
+            try{
+                file.getParentFile().mkdirs();
+                plugin.saveResource(getFileName(), false);
+                Files.move(new File(plugin.getDataFolder(), getFileName()), new File(plugin.getDataFolder() + "/arenas/" + getFileName()));
+            }catch (IOException ex){
+                ex.printStackTrace();
+            }
         }
 
         config = new YamlConfiguration();
@@ -46,22 +53,29 @@ public class Arena_Spawn implements AbstractYamlFile{
 
         ArenaManager arenaManager = plugin.getArenaManager();
 
-        Map<String, Location> locationsMap = new HashMap<>();
-        for(String arenaName: config.getConfigurationSection("arenas").getKeys(false)){
-            locationsMap.put("lobbySpawn", config.getLocation("arenas." + arenaName + ".lobby_spawn_location"));
-            locationsMap.put("spectatorSpawn", config.getLocation("arenas." + arenaName + ".spectator_spawn_location"));
-            locationsMap.put("endSpawn", config.getLocation("arenas." + arenaName + ".end_spawn_location"));
+        ConfigurationSection section = config.getConfigurationSection("arenas");
 
-            GameInstance gameInstance = plugin.getGameManager().getGameInstances().get(arenaManager.returnID(arenaName));
-            List<Team> teams = gameInstance.getTeams();
+        if(section != null){
+            Map<String, Location> locationsMap = new HashMap<>();
+            for(String arenaName: section.getKeys(false)){
+                locationsMap.put("lobbySpawn", config.getLocation("arenas." + arenaName + ".lobby_spawn_location"));
+                locationsMap.put("spectatorSpawn", config.getLocation("arenas." + arenaName + ".spectator_spawn_location"));
+                locationsMap.put("endSpawn", config.getLocation("arenas." + arenaName + ".end_spawn_location"));
 
-            for(Team team: teams){
-                locationsMap.put(team.getTeamName() + "SpawnLocation", config.getLocation("arenas." + arenaName + ".game_spawn_locations." + team.getTeamName()));
-                plugin.getLogger().info("Found " + team.getTeamName() + " spawn location");
+                GameInstance gameInstance = plugin.getGameManager().getGameInstances().get(arenaManager.returnID(arenaName));
+                List<Team> teams = gameInstance.getTeams();
+
+                for(Team team: teams){
+                    locationsMap.put(team.getTeamName() + "SpawnLocation", config.getLocation("arenas." + arenaName + ".game_spawn_locations." + team.getTeamName()));
+                    plugin.getLogger().info("Found " + team.getTeamName() + " spawn location");
+                }
+                plugin.getLogger().info("Loaded arena " + arenaName + " spawns");
+                arenaManager.loadArenaSpawnLocationData(arenaName, locationsMap);
             }
-            plugin.getLogger().info("Loaded arena " + arenaName + " spawns");
-            arenaManager.loadArenaSpawnLocationData(arenaName, locationsMap);
+        }else{
+            plugin.getLogger().info("Error: There is nothing in arena_spawn.yml, probably its the first time loading Bedwars plugin.");
         }
+
 
     }
 

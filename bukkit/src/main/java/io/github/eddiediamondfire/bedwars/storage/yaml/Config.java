@@ -1,5 +1,6 @@
 package io.github.eddiediamondfire.bedwars.storage.yaml;
 
+import com.google.common.io.Files;
 import io.github.eddiediamondfire.bedwars.Bedwars;
 import io.github.eddiediamondfire.bedwars.storage.FileManager;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -28,8 +29,13 @@ public class Config implements AbstractYamlFile{
         File file = new File(plugin.getDataFolder(), getFileName());
 
         if(!file.exists()){
-            file.getParentFile().mkdirs();
-            plugin.saveResource(getFileName(), false);
+            try{
+                file.getParentFile().mkdirs();
+                plugin.saveResource(getFileName(), false);
+                Files.move(new File(plugin.getDataFolder(), getFileName()), new File(plugin.getDataFolder() + "/arenas/" + getFileName()));
+            }catch (IOException ex){
+                ex.printStackTrace();
+            }
         }
 
         config = new YamlConfiguration();
@@ -41,6 +47,7 @@ public class Config implements AbstractYamlFile{
         }
     }
 
+    // TODO
     @Override
     public void save() {
 

@@ -8,4 +8,5 @@ public interface SubCommand {
     String getSyntax();
     String getDescription();
     boolean execute(Player player, String[] args);
+
 }
