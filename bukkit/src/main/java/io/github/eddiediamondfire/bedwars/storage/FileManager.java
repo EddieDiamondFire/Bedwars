@@ -1,8 +1,10 @@
 package io.github.eddiediamondfire.bedwars.storage;
 
 import io.github.eddiediamondfire.bedwars.Bedwars;
+import io.github.eddiediamondfire.bedwars.storage.yaml.AbstractYamlFile;
 import io.github.eddiediamondfire.bedwars.storage.yaml.Arena_Data;
 import io.github.eddiediamondfire.bedwars.storage.yaml.Arena_Spawn;
+import io.github.eddiediamondfire.bedwars.storage.yaml.Config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,17 +12,18 @@ import java.util.List;
 public class FileManager {
 
     private final Bedwars plugin;
-    private List<AbstractFile> files = null;
+    private List<AbstractYamlFile> files = null;
 
     public FileManager(Bedwars plugin){
         this.plugin = plugin;
         files = new ArrayList<>();
+        files.add(new Config(this));
         files.add(new Arena_Data(this));
         files.add(new Arena_Spawn(this));
     }
 
     public void setupFileConfiguration(){
-        for(AbstractFile file: getFiles()){
+        for(AbstractYamlFile file: getFiles()){
             file.load();
         }
     }
@@ -29,12 +32,12 @@ public class FileManager {
         return plugin;
     }
 
-    public List<AbstractFile> getFiles() {
+    public List<AbstractYamlFile> getFiles() {
         return files;
     }
 
-    public AbstractFile getFile(String fileName){
-        for(AbstractFile file: getFiles()){
+    public AbstractYamlFile getFile(String fileName){
+        for(AbstractYamlFile file: getFiles()){
             if(file.getFileName().equalsIgnoreCase(fileName)){
                 return file;
             }

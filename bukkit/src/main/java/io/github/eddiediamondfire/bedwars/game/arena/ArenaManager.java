@@ -72,7 +72,7 @@ public class ArenaManager {
         return 0;
     }
 
-    public void loadArenaData(String arenaName, int id, boolean activated, int numberOfPlayers, List<Team> teams, int teamMode){
+    public void loadArenaData(String arenaName, int id, boolean activated, int numberOfPlayers, List<Team> teams, int teamMode, int minPlayers){
         GameInstance gameInstance = new GameInstance(arenaName, id);
         gameInstance.setPlayersInGame(new ArrayList<>());
         if(activated){
@@ -83,6 +83,7 @@ public class ArenaManager {
         gameInstance.setNumberOfPlayers(numberOfPlayers);
         gameInstance.setTeamMode(teamMode);
         gameInstance.setTeams(teams);
+        gameInstance.setMinPlayers(minPlayers);
         gameInstances.put(id, gameInstance);
     }
 

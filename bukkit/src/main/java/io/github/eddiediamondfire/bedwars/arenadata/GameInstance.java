@@ -14,6 +14,7 @@ public class GameInstance {
     private List<Team> teams;
     private int numberOfPlayers;
     private int teamMode;
+    private int minPlayers;
 
     public GameInstance(String arenaName, int id){
         setArenaName(arenaName);
@@ -22,8 +23,9 @@ public class GameInstance {
         setGameLocations(new HashMap<>());
         setGameState(GameState.DEACTIVATED);
         setTeams(new ArrayList<>());
-        setNumberOfPlayers(0);
+        setNumberOfPlayers(10);
         setTeamMode(1);
+        setMinPlayers(2);
     }
 
 
@@ -89,5 +91,13 @@ public class GameInstance {
 
     public void setTeamMode(int teamMode) {
         this.teamMode = teamMode;
+    }
+
+    public int getMinPlayers() {
+        return minPlayers;
+    }
+
+    public void setMinPlayers(int minPlayers) {
+        this.minPlayers = minPlayers;
     }
 }

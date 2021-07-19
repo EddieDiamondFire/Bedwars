@@ -37,11 +37,11 @@ public class CommandManager implements TabExecutor {
                     }
                 }
             }else{
-                player.sendMessage(ChatColor.YELLOW + "=======================================");
+                player.sendMessage(ChatColor.RED + "Invalid Arguments");
+                player.sendMessage(ChatColor.RED + "Usage: ");
                 for (SubCommand subCommand : subCommands) {
-                    player.sendMessage(ChatColor.YELLOW + subCommand.getSyntax() + " - " + subCommand.getDescription());
+                    player.sendMessage(ChatColor.RED + subCommand.getSyntax() + " -> " + subCommand.getDescription());
                 }
-                player.sendMessage(ChatColor.YELLOW + "=======================================");
             }
         }
         return true;

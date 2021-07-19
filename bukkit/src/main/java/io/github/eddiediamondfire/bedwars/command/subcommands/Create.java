@@ -5,10 +5,12 @@ import io.github.eddiediamondfire.bedwars.arenadata.GameInstance;
 import io.github.eddiediamondfire.bedwars.command.CommandManager;
 import io.github.eddiediamondfire.bedwars.command.SubCommand;
 import io.github.eddiediamondfire.bedwars.game.GameManager;
+import io.github.eddiediamondfire.bedwars.storage.yaml.AbstractYamlFile;
 import io.github.eddiediamondfire.bedwars.utils.Utils;
 import io.github.eddiediamondfire.bedwars.utils.based.BedwarsMathUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -44,7 +46,10 @@ public class Create implements SubCommand {
             String arenaName = args[1];
 
             if(plugin.getArenaManager().arenaAlreadyExist(arenaName)){
-                player.sendMessage(ChatColor.RED + "Arena Already exist with name " + arenaName);
+                player.sendMessage(ChatColor.RED + "Error: An arena already exists with the name " + arenaName);
+                player.sendMessage(ChatColor.RED + "Key: <> -> Required");
+                player.sendMessage(ChatColor.RED + "     [] -> Optional");
+                player.sendMessage(ChatColor.RED + "Usage: /<bedwars, bw> create <ArenaName>");
                 return true;
             }
 
@@ -53,9 +58,18 @@ public class Create implements SubCommand {
 
             Map<Integer, GameInstance> gameInstances = plugin.getGameManager().getGameInstances();
             gameInstances.put(randomNumber, gameInstance);
+
+            // save data
+            AbstractYamlFile arenaData = plugin.getFileManager().getFile("arena_data.yml");
+            FileConfiguration config = arenaData.getConfig();
+
+            config.set("arenas", arenaName);
             return false;
         }else{
-            player.sendMessage(ChatColor.RED + "Not Enough Arguments");
+            player.sendMessage(ChatColor.RED + "Invalid Arguments");
+            player.sendMessage(ChatColor.RED + "Key: <> -> Required");
+            player.sendMessage(ChatColor.RED + "     [] -> Optional");
+            player.sendMessage(ChatColor.RED + "Usage: /<bedwars, bw> create <ArenaName>");
             return true;
         }
     }

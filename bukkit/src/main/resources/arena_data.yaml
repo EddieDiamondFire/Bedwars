@@ -4,6 +4,7 @@ arenas:
     team_mode: 1
     id: 12
     number_of_players: 8
+    min_players: 2
     teams:
       yellow:
         team_display_name: Yellow

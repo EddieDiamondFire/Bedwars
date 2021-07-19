@@ -9,7 +9,7 @@ public class Bedwars extends JavaPlugin {
     private final CommandManager commandManager;
     private final GameManager gameManager;
     private final ArenaManager arenaManager;
-    private FileManager fileManager;
+    private final FileManager fileManager;
 
     public Bedwars(){
         commandManager = new CommandManager(this);
@@ -41,5 +41,9 @@ public class Bedwars extends JavaPlugin {
 
     public ArenaManager getArenaManager() {
         return arenaManager;
+    }
+
+    public FileManager getFileManager(){
+        return fileManager;
     }
 }

@@ -1,0 +1,9 @@
+# DO NOT TOUCH!
+config_version: dev-SNAPSHOT
+
+default_lobby_count_down: 10
+default_min_player: 2
+default_max_player: 16
+
+# This most be in seconds. 1 Minute = 60 Seconds.
+default_game_time: 1800
