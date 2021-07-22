@@ -63,7 +63,6 @@ public class Create implements SubCommand {
             AbstractYamlFile arenaData = plugin.getFileManager().getFile("arena_data.yml");
             FileConfiguration config = arenaData.getConfig();
 
-            config.set("arenas", arenaName);
             config.set("arenas." + arenaName + ".activated", false);
             config.set("arenas." + arenaName + ".team_mode", 1);
             config.set("arenas." + arenaName + ".id", randomNumber);

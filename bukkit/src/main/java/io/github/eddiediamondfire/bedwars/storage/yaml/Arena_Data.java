@@ -8,7 +8,6 @@ import io.github.eddiediamondfire.bedwars.arenadata.Team;
 import io.github.eddiediamondfire.bedwars.game.arena.ArenaManager;
 import io.github.eddiediamondfire.bedwars.storage.FileManager;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,8 +15,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,18 +66,22 @@ public class Arena_Data implements AbstractYamlFile{
                 int teamMode = config.getInt("arenas." + key + ".team_mode");
                 int minPlayers = config.getInt("arenas."+ key + ".min_players");
 
-                List<Team> teams = new ArrayList<Team>();
-                for(String teamKey: config.getConfigurationSection("arenas." + key + ".teams").getKeys(false)){
-                    String teamName = config.getString("arenas." + key + ".teams." + teamKey);
-                    String teamDisplayName = config.getString("arenas." + key + ".teams." + teamKey + ".team_display_name");
-                    ChatColor teamColour = ChatColor.valueOf(config.getString("arenas." + key + ".teams." + teamKey + ".team_colour"));
-                    Team team = new Team(teamName, teamDisplayName, teamColour);
-                    teams.add(team);
+                ConfigurationSection teamSection = config.getConfigurationSection("arenas." + key + ".teams");
+
+                if(teamSection != null){
+                    List<Team> teams = new ArrayList<>();
+                    for(String teamKey: config.getConfigurationSection("arenas." + key + ".teams").getKeys(false)){
+                        String teamName = config.getString("arenas." + key + ".teams." + teamKey);
+                        String teamDisplayName = config.getString("arenas." + key + ".teams." + teamKey + ".team_display_name");
+                        ChatColor teamColour = ChatColor.valueOf(config.getString("arenas." + key + ".teams." + teamKey + ".team_colour"));
+                        Team team = new Team(teamName, teamDisplayName, teamColour);
+                        teams.add(team);
+                    }
+                    arenaManager.loadArenaData(key, id, activated, numberOfPlayers, teams, teamMode, minPlayers);
+                    plugin.getLogger().info("Loaded arena "+ key);
+                }else{
+                    plugin.getLogger().info("Error: No Teams Found, Probably they haven't setup a team yet.");
                 }
-
-
-                arenaManager.loadArenaData(key, id, activated, numberOfPlayers, teams, teamMode, minPlayers);
-                plugin.getLogger().info("Loaded arena "+ key);
             }
         }else{
             plugin.getLogger().info("Error: This nothing in arena_data.yml, probably this is the first time Bedwars plugin is installed.");

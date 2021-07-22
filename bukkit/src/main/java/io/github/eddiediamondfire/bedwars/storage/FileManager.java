@@ -28,6 +28,12 @@ public class FileManager {
         }
     }
 
+    public void saveFiles(){
+        for(AbstractYamlFile file: getFiles()){
+            file.save();
+        }
+    }
+
     public Bedwars getPlugin() {
         return plugin;
     }
