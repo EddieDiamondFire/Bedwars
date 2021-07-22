@@ -15,6 +15,7 @@ subprojects{
 
     repositories {
         mavenCentral()
+        maven("https://jitpack.io")
         flatDir {
             dirs("libs")
         }
@@ -40,6 +41,5 @@ tasks{
     named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar"){
         archiveBaseName.set(projectName)
         archiveVersion.set(projectVersion)
-        relocate("de.leonhard.storage", "io.github.eddiediamondfire.storage")
     }
 }
